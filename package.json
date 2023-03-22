@@ -1,0 +1,17 @@
+{
+  "name": "nodejs_webhook_listener",
+  "version": "1.0.0",
+  "description": "listens for webhooks and prints out the responses",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "necrolingus",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "node-cache": "^5.1.2",
+    "uuid": "^9.0.0"
+  }
+}

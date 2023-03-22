@@ -21,7 +21,8 @@ function checkCookieWebhookId(webhookId, cookieWebhookId){
     if (!cookieWebhookId){
         messageToReturn = "Make a GET request to / first to get a webhookId"
     } else {
-        //Lets check if the key in the cache matches the key the user is passing through
+        //Lets check if the key in the cache matches the key the user is passing through.
+        //This is not really relevant if signed cookies are used, but lets keep this check
         if (webhookId != cookieWebhookId){
             messageToReturn = "Your webhook IDs do not match"
         }
@@ -40,7 +41,7 @@ function generateJsonData(req){
     //build up the Object key
     let requestDate = new Date()
     requestDate.toISOString()    
-    fullKey = host + " - " + requestDate
+    fullKey = host + " -- " + req.method + " -- " + requestDate
     
     let cacheValue = {}
     cacheValue[fullKey] = {                           
@@ -57,20 +58,42 @@ function setCacheItem(req, res) {
     webhookId = req.params.webhookId
     cookieWebhookId = req.signedCookies.webhookId
     
+    //if the cookie is tampered with, i.e. the signature cannot be verified, false will be returned
     if (cookieWebhookId === false){
-        return res.status(400).send("Cookie tampered!")
+        return res.status(400).send("Cookie tampered!. Wait for you cookie to expire")
     }
-       
-    //If there is no cookie with a unique URL, tell the user to get one first
+    
+    //check cookie value
     cacheOutcome = checkCookieWebhookId(webhookId, cookieWebhookId)
     if (cacheOutcome != "") {
         return res.status(500).send(cacheOutcome)
     }
     
-    //The key value will be set irrespective if it is a GET or POST   
+    //generate the newly received data to be pushed onto the array
     cacheValue = generateJsonData(req)
-    outcome = myCache.set(webhookId, cacheValue)
-    return res.status(200).json({webhookId: cacheValue})
+    
+    //get the existing value and check if it is an array
+    //if it is, add the new value to it. If it is not, create a new array and set the key value
+    existingValue = myCache.get(webhookId);
+    if (Array.isArray(existingValue)){
+        existingValue.unshift(cacheValue)
+    } else {
+        existingValue = []
+        existingValue.unshift(cacheValue)
+    }
+    
+    //lets only store the last 50 items on our array
+    if (existingValue.length > 50){
+        existingValue.pop() //pop removes the last item
+    }
+
+    //set the cache
+    outcome = myCache.set(webhookId, existingValue)
+
+    //return the array
+    returnJson = {}
+    returnJson[webhookId] = existingValue 
+    return res.status(200).json(returnJson)
 }
 
 function deleteCacheItem(req, res) {

@@ -12,6 +12,7 @@ app.use(cookieParser('mycookiesecret', {}));
 const webhookRouter = require('./routes/apiRoutes')
 const appRouter = webhookRouter.appRouter(app)
 
+//listen on 3000
 app.listen(3000, () => {
     console.log('App is running')
 })

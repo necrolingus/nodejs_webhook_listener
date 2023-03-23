@@ -1,21 +1,11 @@
 const { v4: uuidv4 } = require('uuid');
-const nodeCache = require("node-cache");
-const { exists } = require('fs');
-//keys will live for 2 hours
-const myCache = new nodeCache({"stdTTL":7200, "checkperiod": 600, "deleteOnExpire": true, "maxKeys": 1000})
+const myCache = require('./cacheDeclaration')
 
 
-function generateUniqueId(req, res) {
+function generateUniqueIdAndSetCacheKey(req, res) {
     webhookId = uuidv4()
     myCache.set(webhookId, [])
     return res.status(200).send("Send your webhook responses to this unique URL: " + webhookId)
-}
-
-function checkIfCacheKeyExists(webhookId) {
-    keyExists = myCache.has(webhookId);
-    if (keyExists === false){
-        return 'Key does not exist. Get a key from /'
-    }
 }
 
 function generateJsonData(req){
@@ -44,11 +34,7 @@ function generateJsonData(req){
 
 function setCacheItem(req, res) {
     webhookId = req.params.webhookId
-    doesKeyEsist = checkIfCacheKeyExists(webhookId)
-    if (doesKeyEsist){
-        return res.status(404).send(doesKeyEsist)
-    }
-       
+         
     //generate the newly received data to be pushed onto the array
     cacheValue = generateJsonData(req)    
     existingValue = myCache.get(webhookId)
@@ -64,11 +50,7 @@ function setCacheItem(req, res) {
 
 function deleteCacheItem(req, res) {
     webhookId = req.params.webhookId
-    doesKeyEsist = checkIfCacheKeyExists(webhookId)
-    if (doesKeyEsist){
-        return res.status(404).send(doesKeyEsist)
-    }
-    
+   
     outcome = myCache.del(webhookId)
     if (outcome == 1) {
         return res.status(200).send('key deleted')
@@ -77,17 +59,13 @@ function deleteCacheItem(req, res) {
     }
 }
 
-function getData(req, res) {
+function retrieveData(req, res) {
     webhookId = req.params.webhookId
-    doesKeyEsist = checkIfCacheKeyExists(webhookId)
-    if (doesKeyEsist){
-        return res.status(404).send(doesKeyEsist)
-    }
-
+    
     existingValue = myCache.get(webhookId);
     returnJson = {}
     returnJson[webhookId] = existingValue 
     return res.status(200).json(returnJson)
 }
 
-module.exports = {generateUniqueId, setCacheItem, deleteCacheItem, getData}
+module.exports = {generateUniqueIdAndSetCacheKey, setCacheItem, deleteCacheItem, retrieveData}

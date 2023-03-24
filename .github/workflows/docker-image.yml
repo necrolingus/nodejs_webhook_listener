@@ -19,5 +19,5 @@ jobs:
       -    
         name: Build Inventory Image
         run: |
-              docker build . --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
+              docker build . --file dockerfile --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
               docker push ghcr.io/<your-GitHub-username>/store:latest

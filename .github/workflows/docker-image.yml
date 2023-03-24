@@ -16,8 +16,11 @@ jobs:
           username: ${{ github.actor }}
           #token is auto generated for you
           password: ${{ secrets.GITHUB_TOKEN }} 
+      -
+        name: Checkout Before Build
+        uses: actions/checkout@v3
       -    
-        name: Build Inventory Image
+        name: Build Image
         run: |
-              docker build . --file dockerfile --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
+              docker build . --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
               docker push ghcr.io/<your-GitHub-username>/store:latest

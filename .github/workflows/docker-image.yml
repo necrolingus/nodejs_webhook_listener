@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag nodejs_webhook_listener
+      run: docker build . --tag nodejs_webhook_listener:latest

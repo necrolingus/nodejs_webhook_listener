@@ -23,4 +23,4 @@ jobs:
         name: Build Image
         run: |
               docker build . --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
-              docker push ghcr.io/<your-GitHub-username>/store:latest
+              docker push ghcr.io/${{github.actor}}/store:latest

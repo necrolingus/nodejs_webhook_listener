@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: docker_image_build_nodejs_webhook
 
 on:
   push:
@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --nodejs_webhook_listener:$(date +%s)
+      run: docker build . --file Dockerfile --nodejs_webhook_listener

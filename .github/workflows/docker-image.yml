@@ -1,13 +1,17 @@
-name: docker_image_build_nodejs_webhook
+name: ci
 
 on:
   push:
-    branches: [ "main" ]
- 
+    branches: main
+
 jobs:
-  build:
+  login:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --tag nodejs_webhook_listener:latest
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

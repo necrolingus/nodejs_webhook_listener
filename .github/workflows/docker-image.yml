@@ -5,8 +5,11 @@ on:
     branches: main
 
 jobs:
-  login:
+  login_build_push:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       -
         name: Login to GitHub Container Registry

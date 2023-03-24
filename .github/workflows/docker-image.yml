@@ -1,4 +1,4 @@
-name: ci
+name: auto_build_dockerfile
 
 on:
   push:
@@ -14,4 +14,10 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          #token is auto generated for you
+          password: ${{ secrets.GITHUB_TOKEN }} 
+      -    
+        name: Build Inventory Image
+        run: |
+              docker build . --tag ghcr.io/${{github.actor}}/${{ github.event.repository.name }}:latest
+              docker push ghcr.io/<your-GitHub-username>/store:latest

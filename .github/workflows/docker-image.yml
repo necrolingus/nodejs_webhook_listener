@@ -1,19 +1,13 @@
-name: Build and publish a Docker image to ghcr.io
+name: docker_image_build_nodejs_webhook
+
 on:
   push:
-    branches:
-      - main
-
+    branches: [ "main" ]
+ 
 jobs:
-  docker_publish:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      # https://github.com/marketplace/actions/push-to-ghcr
-      - name: Build and publish a Docker image for ${{ github.repository }}
-        uses: necrolingus/${{ github.repository }}@main
-        with:
-          image_name: ${{ github.repository }}  # it will be lowercased internally
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --tag nodejs_webhook_listener:latest

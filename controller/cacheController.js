@@ -5,7 +5,21 @@ const myCache = require('./cacheDeclaration')
 function generateUniqueIdAndSetCacheKey(req, res) {
     webhookId = uuidv4()
     myCache.set(webhookId, [])
-    return res.status(200).send("Send your webhook responses to this unique URL: " + webhookId)
+    return res.status(200).send(`<p><strong>Send your webhook responses to this unique URL:</strong> ` + webhookId + `
+                                <br><strong>You can check the readme here:</strong> 
+                                <a href='https://github.com/necrolingus/nodejs_webhook_listener' target='_blank'>https://github.com/necrolingus/nodejs_webhook_listener</a>
+                                <br><strong>Want to host it yourself? Get the package here: </strong>
+                                <span style="color: #ff0000">docker pull ghcr.io/necrolingus/nodejs_webhook_listener:latest</span></p>
+                                <p>
+                                 <strong>What do I do with the data you send here?</strong>
+                                 <br>
+                                 Absolutely nothing. I do no care about your data nor do I have the time to get rummage through 
+                                 the data you send.
+                                 <br>
+                                 If you are worried about privacy, then host this project yourself, that it the reason I created
+                                 this project in the first place so that I dont have to send my data to a 
+                                 3rd party like webhook.site
+                                </p>`)
 }
 
 function generateJsonData(req){
